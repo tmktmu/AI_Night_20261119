@@ -1,0 +1,71 @@
+- generic [active] [ref=f2e1]:
+  - banner [ref=f2e2]:
+    - generic [ref=f2e3]:
+      - heading "家計簿アプリ" [level=1] [ref=f2e4]
+      - tablist "画面の切り替え" [ref=f2e5]:
+        - tab "ホーム" [selected] [ref=f2e6] [cursor=pointer]
+        - tab "分析" [ref=f2e7] [cursor=pointer]
+        - tab "設定" [ref=f2e8] [cursor=pointer]
+  - main [ref=f2e9]:
+    - tabpanel [ref=f2e10]:
+      - generic [ref=f2e11]:
+        - button "◀ 前月" [ref=f2e12] [cursor=pointer]
+        - generic [ref=f2e13]: 2026年11月
+        - button "翌月 ▶" [ref=f2e14] [cursor=pointer]
+      - generic [ref=f2e15]:
+        - generic [ref=f2e16]:
+          - generic [ref=f2e17]:
+            - generic [ref=f2e18]: 収入
+            - generic [ref=f2e19]: 0円
+          - generic [ref=f2e20]:
+            - generic [ref=f2e21]: 支出
+            - generic [ref=f2e22]: 0円
+          - generic [ref=f2e23]:
+            - generic [ref=f2e24]: 収支
+            - generic [ref=f2e25]: 0円
+        - paragraph [ref=f2e27]: 予算が未設定です。「設定」タブで月の予算を決めると、ここに残りの予算が表示されます。
+      - generic [ref=f2e28]:
+        - heading "収支の登録" [level=2] [ref=f2e29]
+        - generic [ref=f2e30]:
+          - generic [ref=f2e31]:
+            - group "種別" [ref=f2e32]:
+              - generic [ref=f2e34]:
+                - generic [ref=f2e35] [cursor=pointer]:
+                  - radio "支出" [checked]
+                  - generic [ref=f2e36]: 支出
+                - generic [ref=f2e37] [cursor=pointer]:
+                  - radio "収入"
+                  - generic [ref=f2e38]: 収入
+            - generic [ref=f2e39]:
+              - generic [ref=f2e40]: 日付
+              - textbox "日付" [ref=f2e41]: 2026-11-11
+            - generic [ref=f2e42]:
+              - generic [ref=f2e43]: 金額
+              - generic [ref=f2e44]:
+                - textbox "金額" [ref=f2e45]:
+                  - /placeholder: "例: 1200"
+                - text: 円
+            - generic [ref=f2e46]:
+              - generic [ref=f2e47]: カテゴリ
+              - combobox "カテゴリ" [ref=f2e48]:
+                - option "選択してください" [selected]
+                - option "食費"
+                - option "日用品"
+                - option "交通費"
+                - option "住居費"
+                - option "水道光熱費"
+                - option "通信費"
+                - option "娯楽"
+                - option "交際費"
+                - option "医療費"
+                - option "その他"
+            - generic [ref=f2e49]:
+              - generic [ref=f2e50]: メモ（任意）
+              - textbox "メモ（任意）" [ref=f2e51]:
+                - /placeholder: "例: 昼食"
+          - generic [ref=f2e52]:
+            - button "登録" [ref=f2e53] [cursor=pointer]
+            - status
+      - generic [ref=f2e54]:
+        - heading "この月の記録" [level=2] [ref=f2e55]
+        - paragraph [ref=f2e56]: この月の記録はありません
