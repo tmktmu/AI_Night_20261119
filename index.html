@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>家計簿アプリ</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <h1>家計簿アプリ</h1>
+      <nav class="tabs" role="tablist" aria-label="画面の切り替え">
+        <button type="button" class="tab is-active" data-tab="home" role="tab" aria-selected="true">ホーム</button>
+        <button type="button" class="tab" data-tab="analysis" role="tab" aria-selected="false">分析</button>
+        <button type="button" class="tab" data-tab="settings" role="tab" aria-selected="false">設定</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== S-01 ホーム ===== -->
+    <section id="tab-home" class="tab-panel" role="tabpanel">
+      <div class="month-nav">
+        <button type="button" class="btn month-prev">◀ 前月</button>
+        <span class="month-label"></span>
+        <button type="button" class="btn month-next">翌月 ▶</button>
+        <button type="button" class="btn btn-small month-today" hidden>今月へ</button>
+      </div>
+
+      <div class="card">
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-label">収入</div>
+            <div class="stat-value" id="sum-income"></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">支出</div>
+            <div class="stat-value" id="sum-expense"></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">収支</div>
+            <div class="stat-value" id="sum-balance"></div>
+          </div>
+        </div>
+        <div id="sum-budget" class="budget-summary"></div>
+      </div>
+
+      <div class="card">
+        <h2 id="tx-form-title">収支の登録</h2>
+        <form id="tx-form" novalidate>
+          <div class="form-grid">
+            <fieldset class="field type-toggle">
+              <legend>種別</legend>
+              <div class="segmented">
+                <label><input type="radio" name="tx-type" value="expense" checked><span>支出</span></label>
+                <label><input type="radio" name="tx-type" value="income"><span>収入</span></label>
+              </div>
+            </fieldset>
+            <div class="field">
+              <label for="tx-date">日付</label>
+              <input type="date" id="tx-date">
+              <span class="field-error" id="err-date"></span>
+            </div>
+            <div class="field">
+              <label for="tx-amount">金額</label>
+              <span class="input-suffix">
+                <input type="text" id="tx-amount" inputmode="numeric" placeholder="例: 1200" autocomplete="off">円
+              </span>
+              <span class="field-error" id="err-amount"></span>
+            </div>
+            <div class="field">
+              <label for="tx-category">カテゴリ</label>
+              <select id="tx-category"></select>
+              <span class="field-error" id="err-category"></span>
+            </div>
+            <div class="field field-wide">
+              <label for="tx-memo">メモ（任意）</label>
+              <input type="text" id="tx-memo" maxlength="100" placeholder="例: 昼食" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" id="tx-submit" class="btn btn-primary">登録</button>
+            <button type="button" id="tx-cancel" class="btn" hidden>キャンセル</button>
+            <p id="tx-message" class="message" role="status"></p>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>この月の記録</h2>
+        <div class="table-scroll">
+          <table class="data-table" id="tx-table">
+            <thead>
+              <tr><th>日付</th><th>種別</th><th>カテゴリ</th><th class="num">金額</th><th>メモ</th><th></th></tr>
+            </thead>
+            <tbody id="tx-list"></tbody>
+          </table>
+        </div>
+        <p id="tx-empty" class="empty">この月の記録はありません</p>
+      </div>
+    </section>
+
+    <!-- ===== S-02 分析 ===== -->
+    <section id="tab-analysis" class="tab-panel" role="tabpanel" hidden>
+      <div class="month-nav">
+        <button type="button" class="btn month-prev">◀ 前月</button>
+        <span class="month-label"></span>
+        <button type="button" class="btn month-next">翌月 ▶</button>
+        <button type="button" class="btn btn-small month-today" hidden>今月へ</button>
+      </div>
+
+      <div class="card">
+        <h2>カテゴリ別内訳（支出）</h2>
+        <div id="breakdown-content" class="breakdown">
+          <div class="chart-box chart-pie">
+            <canvas id="pie-chart" role="img" aria-label="カテゴリ別支出の円グラフ。数値は右の表を参照"></canvas>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>カテゴリ</th><th class="num">金額</th><th class="num">割合</th></tr></thead>
+              <tbody id="breakdown-list"></tbody>
+              <tfoot id="breakdown-total"></tfoot>
+            </table>
+          </div>
+        </div>
+        <p id="breakdown-empty" class="empty" hidden>この月の支出はありません</p>
+      </div>
+
+      <div class="card">
+        <h2>予算と実績</h2>
+        <div class="table-scroll">
+          <table class="data-table compare-table" id="compare-table">
+            <thead>
+              <tr><th>カテゴリ</th><th class="num">予算</th><th class="num">実績</th><th class="num">残り</th><th>消化率</th></tr>
+            </thead>
+            <tbody id="compare-list"></tbody>
+            <tfoot id="compare-total"></tfoot>
+          </table>
+        </div>
+        <p id="compare-empty" class="empty" hidden>予算も支出もありません。「設定」タブで予算を決めてください。</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>月ごとの推移（支出）</h2>
+          <label class="inline-field">表示期間
+            <select id="trend-months">
+              <option value="6">直近6か月</option>
+              <option value="12">直近12か月</option>
+            </select>
+          </label>
+        </div>
+        <p class="hint">表示中の月までをさかのぼって表示します。</p>
+        <div id="trend-content">
+          <div class="chart-box chart-trend">
+            <canvas id="trend-chart" role="img" aria-label="月ごとのカテゴリ別支出の積み上げ棒グラフ。数値は下の表を参照"></canvas>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table trend-table" id="trend-table"></table>
+          </div>
+        </div>
+        <p id="trend-empty" class="empty" hidden>この期間の支出はありません</p>
+      </div>
+    </section>
+
+    <!-- ===== S-03 設定 ===== -->
+    <section id="tab-settings" class="tab-panel" role="tabpanel" hidden>
+      <div class="card">
+        <h2>予算設定</h2>
+        <p class="hint">予算は毎月共通です。空欄のカテゴリは「予算なし」になります。</p>
+        <div class="field budget-total-field">
+          <label for="budget-total">月の総予算</label>
+          <span class="input-suffix">
+            <input type="text" id="budget-total" inputmode="numeric" placeholder="予算なし" autocomplete="off">円
+          </span>
+          <span class="field-error" id="err-budget-total"></span>
+        </div>
+        <table class="data-table budget-table">
+          <thead><tr><th>カテゴリ</th><th>予算</th></tr></thead>
+          <tbody id="budget-category-list"></tbody>
+          <tfoot><tr><th>カテゴリ別予算の合計</th><td id="budget-category-sum" class="num-left"></td></tr></tfoot>
+        </table>
+        <div class="form-actions">
+          <button type="button" id="budget-save" class="btn btn-primary">保存</button>
+          <p id="budget-message" class="message" role="status"></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>カテゴリ管理</h2>
+        <p class="hint">記録で使われているカテゴリは削除できません。グラフの色は支出カテゴリの並び順で決まり、9番目以降はグレーでまとめて表示されます。</p>
+        <div class="cat-columns">
+          <div>
+            <h3>支出カテゴリ</h3>
+            <ul class="cat-list" id="cat-list-expense"></ul>
+            <form class="cat-add" data-type="expense">
+              <input type="text" placeholder="新しい支出カテゴリ" maxlength="20" aria-label="新しい支出カテゴリ名">
+              <button type="submit" class="btn">追加</button>
+            </form>
+          </div>
+          <div>
+            <h3>収入カテゴリ</h3>
+            <ul class="cat-list" id="cat-list-income"></ul>
+            <form class="cat-add" data-type="income">
+              <input type="text" placeholder="新しい収入カテゴリ" maxlength="20" aria-label="新しい収入カテゴリ名">
+              <button type="submit" class="btn">追加</button>
+            </form>
+          </div>
+        </div>
+        <p id="cat-message" class="message" role="status"></p>
+      </div>
+
+      <div class="card">
+        <h2>バックアップ・復元</h2>
+        <p class="hint">データはこのブラウザの中にだけ保存されています。閲覧履歴を消去すると消えることがあるので、ときどきバックアップしてください。</p>
+        <div class="form-actions">
+          <button type="button" id="backup-export" class="btn btn-primary">バックアップ</button>
+          <button type="button" id="backup-import" class="btn">復元</button>
+          <input type="file" id="backup-file" accept=".json,application/json" hidden>
+          <p id="backup-message" class="message" role="status"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="lib/chart.umd.min.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/summary.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/transactions.js"></script>
+  <script src="js/budget.js"></script>
+  <script src="js/categories.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

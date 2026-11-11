@@ -1,0 +1,17 @@
+{
+  "name": "kakeibo-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "自分用の家計簿アプリ（ブラウザだけで動く）",
+  "scripts": {
+    "test": "node --test \"tests/**/*.test.js\"",
+    "test:coverage": "node tests/run-coverage.js"
+  },
+  "devDependencies": {
+    "istanbul-lib-coverage": "^3.2.2",
+    "istanbul-lib-instrument": "^6.0.3",
+    "istanbul-lib-report": "^3.0.1",
+    "istanbul-reports": "^3.2.0",
+    "jsdom": "^26.1.0"
+  }
+}
